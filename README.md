@@ -3,10 +3,16 @@
 This is the second C# exercise for the Full-stack system developer program from Lexicon.
 
 ## MenuFlow
-The program implements a simple console-based menu system that allows users to select from various options. The menu is displayed in a loop until the user chooses to exit:
+The program implements a simple console-based menu system that allows users to select from various programs from a main menu.
+
+### Main menu 
+The menu is displayed in a loop until the user selects a valid option or  chooses to exit the program:
 1) Youth or Pensioner
 2) Repeat ten times
 3) The third word
+4) (Q) Exit program
+
+<img alt="Main menu flow chart" src="MainMenuFlow.png" width="600" />
 
 ### Option 1: Youth or Pensioner
 To demonstrate if statements, a fictional local movie theater offers discounted tickets for youth (under 20) and pensioners (64 and older). The user is prompted to enter their age, and the program determines if they are eligible for a discount, displaying the resulting price.
