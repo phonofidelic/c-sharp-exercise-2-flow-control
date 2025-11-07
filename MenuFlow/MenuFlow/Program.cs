@@ -44,7 +44,7 @@
 
             if (!ValidateMenuInput(rawInput))
             {
-                throw new ArgumentException($"\"{rawInput}\" is not a valid selection. \nPlease try again, or press \"Q\" to exit {Name}");
+                throw new ArgumentException($"\"{rawInput}\" is not a valid selection.");
             }
             return Enum.Parse<MenuAction>(rawInput);
         }
@@ -57,12 +57,14 @@
             if (rawInput.Length != 1)
                 return false;
 
-            if (int.TryParse(rawInput, out int input))
+            if (!int.TryParse(rawInput, out int input))
             {
-                if (!Enum.IsDefined(typeof(MenuAction), input))
-                {
-                    return false;
-                }
+                return false;
+            }
+
+            if (!Enum.IsDefined(typeof(MenuAction), input))
+            {
+                return false;
             }
 
             return true;
@@ -73,7 +75,7 @@
             {
                 Console.Clear();
                 Console.WriteLine($"Welcome to {Name}!");
-                Console.WriteLine("Enter an option from the list below to get started:\n");
+                Console.WriteLine("\nEnter an option from the list below to get started:\n");
                 foreach (var option in MenuOptions)
                 {
                     Console.WriteLine($"\t{(int)option.Action}) Run \"{option.Name}\"");
@@ -90,6 +92,10 @@
 
                     switch (SelectedMenuAction)
                     {
+                        case MenuAction.Quit:
+                            Console.WriteLine($"\nThank you for using {Name}. Goodbye!");
+                            Environment.Exit(0);
+                            break;
                         case MenuAction.Program1:
                             Console.Clear();
                             Console.WriteLine(MenuOptions[(int)MenuAction.Program1 -1].Name);
@@ -105,15 +111,15 @@
                         default:
                             break;
                     }
-                    Console.WriteLine($"\nPress any key to return to {Name}\n");
+                    Console.WriteLine($"\n\tPress any key to return to {Name}\n");
                     Console.ReadKey(true);
                     SelectedMenuAction = null;
                 }
                 catch (Exception ex)
                 {
-                    SetMenuException(ex);
+                    SetMenuException(new Exception($"\t{ex.Message}\n\tPlease try again, or press \"Q\" to exit {Name}"));
                 }
-            } while ((SelectedMenuAction) == null);
+            } while (SelectedMenuAction == null);
 
             
         }
