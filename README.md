@@ -6,8 +6,11 @@ This is the second C# exercise for the Full-stack system developer program from 
 The program implements a simple console-based menu system that allows users to select from various programs from a main menu.
 
 ### Main menu 
+
+<img alt="Main menu screenshot" src="MainMenu.png" width="600" />
+
 The menu is displayed in a loop until the user selects a valid option or  chooses to exit the program:
-1) Youth or Pensioner
+1) [Youth or Pensioner](#option-1-youth-or-pensioner)
 2) Repeat ten times
 3) The third word
 4) (Q) Exit program
