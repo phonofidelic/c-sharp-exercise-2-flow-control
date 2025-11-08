@@ -3,7 +3,7 @@ using System.Reflection.Emit;
 
 namespace MenuFlow.Library
 {
-    public class Menu<Actions> where Actions : Enum
+    public class Menu
     {
         public string Name { get; set; }
         private List<MenuOption> MenuOptions { get; set; } = [];
@@ -58,10 +58,16 @@ namespace MenuFlow.Library
                 return false;
             }
 
-            if (!Enum.IsDefined(typeof(Actions), input))
+            if (input < 0 || input >= MenuOptions.Count)
             {
                 return false;
             }
+
+            // TODO: Re-enable Enum validation if we can create dynamic Actions at runtime?
+            //if (!Enum.IsDefined(typeof(Actions), input))
+            //{
+            //    return false;
+            //}
 
             return true;
         }
@@ -124,15 +130,15 @@ namespace MenuFlow.Library
             Console.ResetColor();
         }
 
-        public static Dictionary<int, string> CreateMenuActions<T>() where T : Enum
-        {
-            var result = new Dictionary<int, string>();
-            foreach (var value in Enum.GetValues(typeof(T)))
-            {
-                result.Add((int)value, Enum.GetName(typeof(T), value)!);
-            }
-            return result;
-        }
+        //public static Dictionary<int, string> CreateMenuActions<T>() where T : Enum
+        //{
+        //    var result = new Dictionary<int, string>();
+        //    foreach (var value in Enum.GetValues(typeof(T)))
+        //    {
+        //        result.Add((int)value, Enum.GetName(typeof(T), value)!);
+        //    }
+        //    return result;
+        //}
 
         /* TODO: Use TypeBuilder to create a MenuAction Enum at runtime?
          * https://learn.microsoft.com/en-us/dotnet/api/system.reflection.emit.typebuilder?view=net-9.0#examples

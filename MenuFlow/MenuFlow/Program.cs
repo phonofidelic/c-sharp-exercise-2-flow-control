@@ -4,21 +4,6 @@ namespace MenuFlow
 {
     internal class Program
     {
-        /*
-         * First command is always Quit (0). 
-         * The rest of the commands are named using snake_case for conversion 
-         * to display names when rendered in the menu.
-         */
-        public enum Commands
-        {
-            Quit,
-            Youth_Or_Pensioner,
-            Repeat_Ten_Times,
-            The_Third_Word,
-            //Another_app,
-            //Hello_Again
-        }
-
         public class TestApp(string name) : MenuApplication
         {
             public override string Name { get; set; } = name;
@@ -40,9 +25,7 @@ namespace MenuFlow
 
         static void Main(string[] args)
         {
-            Dictionary<int, string> actions = Menu<Commands>.CreateMenuActions<Commands>();
-
-            Menu<Commands> mainMenu = new("MenuFlow", testApps);
+            Menu mainMenu = new("MenuFlow", testApps);
             mainMenu.Display();
 
             Console.ReadLine();
