@@ -1,9 +1,23 @@
-﻿namespace MenuFlow.Library
+﻿using System.Reflection;
+using System.Reflection.Emit;
+
+namespace MenuFlow.Library
 {
-    public class Menu<Actions>(string name, List<MenuOption> options) where Actions : Enum
+    public class Menu<Actions> where Actions : Enum
     {
-        public string Name { get; set; } = name;
-        private List<MenuOption> MenuOptions { get; set; } = options;
+        public string Name { get; set; }
+        private List<MenuOption> MenuOptions { get; set; } = [];
+
+        public Menu(string name, List<MenuApplication> apps)
+        {
+            Name = name;
+            MenuOptions.Add(new MenuOption("Quit", 0));
+            foreach ((MenuApplication app, int index) in apps.Select((app, index) => (app, index)))
+            {
+                MenuOptions.Add(new MenuOption(app, index + 1));
+            }
+        }
+
         private int? SelectedMenuAction = null;
         private Exception? MenuException = null;
         private void SetMenuException()
@@ -14,14 +28,14 @@
         {
             MenuException = exception;
         }
-        private int GetSelectedMenuAction()
+        private int ReadMenuActionFromKey()
         {
             SetMenuException();
             var rawInput = Console.ReadKey(true).KeyChar.ToString().ToUpper();
 
             if (rawInput == "Q")
             {
-                return MenuOptions[0].Action;
+                return 0;
             }
 
             if (!ValidateMenuInput(rawInput))
@@ -69,7 +83,8 @@
 
                 try
                 {
-                    SelectedMenuAction = GetSelectedMenuAction();
+                    SelectedMenuAction = ReadMenuActionFromKey();
+                    var selectedMenuOption = MenuOptions[SelectedMenuAction.Value];
 
                     switch (SelectedMenuAction)
                     {
@@ -81,8 +96,14 @@
                             break;
                         default:
                             Console.Clear();
-                            // TODO: App implementation goes here
-                            Console.WriteLine(MenuOptions[SelectedMenuAction.Value].Name);
+                            if (selectedMenuOption.MenuApp != null)
+                            {
+                                // TODO: Make sure each MenuApp creates only one instance of itself.
+                                selectedMenuOption.MenuApp.Run();
+                                break;
+                            }
+                            else
+                                Console.WriteLine($"The '{selectedMenuOption.Name}' app has not been implemented yet.");
                             break;
                     }
                     Console.WriteLine($"\n\tPress any key to return to {Name}\n");
@@ -112,11 +133,51 @@
             }
             return result;
         }
+
+        /* TODO: Use TypeBuilder to create a MenuAction Enum at runtime?
+         * https://learn.microsoft.com/en-us/dotnet/api/system.reflection.emit.typebuilder?view=net-9.0#examples
+         */
+        //public static void MenuActionBuilder()
+        //{
+        //    AppDomain currentDomain = AppDomain.CurrentDomain;
+
+        //    AssemblyName assemblyName = new AssemblyName("DynamicMenuActionsAssembly");
+        //    AssemblyBuilder assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(
+        //        assemblyName,
+        //        AssemblyBuilderAccess.Run);
+
+        //    ModuleBuilder moduleBuilder = assemblyBuilder.DefineDynamicModule(
+        //        assemblyName.Name ?? "DynamicMenuActionsAssembly");
+
+        //    TypeBuilder typeBuilder = moduleBuilder.DefineType(
+        //        "DynamicMenuActions",
+        //        TypeAttributes.Public);
+        //}
     }
 
-    public class MenuOption(string name, int action)
+    public class MenuOption
     {
-        public string Name { get; set; } = name;
-        public int Action { get; set; } = action;
+        public string Name;
+        public int Action;
+        public MenuApplication? MenuApp;
+
+        public MenuOption(string name, int action)
+        {
+            Name = name;
+            Action = action;
+            MenuApp = null;
+        }
+        public MenuOption(MenuApplication menuApp, int action)
+        {
+            Name = menuApp.Name;
+            Action = action;
+            MenuApp = menuApp;
+        }
+    }
+
+    public abstract class MenuApplication
+    {
+        public abstract string Name { get; set; }
+        public abstract void Run();
     }
 }

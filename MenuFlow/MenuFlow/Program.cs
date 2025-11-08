@@ -15,24 +15,34 @@ namespace MenuFlow
             Youth_Or_Pensioner,
             Repeat_Ten_Times,
             The_Third_Word,
-            Another_app,
-            Hello_Again
+            //Another_app,
+            //Hello_Again
         }
+
+        public class TestApp(string name) : MenuApplication
+        {
+            public override string Name { get; set; } = name;
+            public override void Run()
+            {
+                Console.WriteLine($"Running application: {Name}");
+                Console.WriteLine("\nThis is a Test App");
+            }
+        }
+        public static TestApp testApp1 = new("Youth Or Pensioner");
+        public static TestApp testApp2 = new("Repeat Ten Times");
+        public static TestApp testApp3 = new("The Third Word");
+
+        public static List<MenuApplication> testApps = [
+            testApp1,
+            testApp2,
+            testApp3
+        ];
+
         static void Main(string[] args)
         {
-            
-
-            List<MenuOption> mainMenuOptions = [];
-            
-
             Dictionary<int, string> actions = Menu<Commands>.CreateMenuActions<Commands>();
 
-            foreach (var action in actions)
-            {
-                mainMenuOptions.Add(new MenuOption(action.Value.ToString().Replace('_', ' '), action.Key));
-            }
-
-            Menu<Commands> mainMenu = new("MenuFlow", mainMenuOptions);
+            Menu<Commands> mainMenu = new("MenuFlow", testApps);
             mainMenu.Display();
 
             Console.ReadLine();
