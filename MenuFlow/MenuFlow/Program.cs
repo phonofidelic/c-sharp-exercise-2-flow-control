@@ -1,148 +1,34 @@
-﻿namespace MenuFlow
+﻿using MenuFlow.Library;
+
+namespace MenuFlow
 {
     internal class Program
     {
+        public class TestApp(string name) : MenuApplication
+        {
+            public override string Name { get; set; } = name;
+            public override void Run()
+            {
+                Console.WriteLine($"Running application: {Name}");
+                Console.WriteLine("\nThis is a Test App");
+            }
+        }
+        public static TestApp testApp1 = new("Youth Or Pensioner");
+        public static TestApp testApp2 = new("Repeat Ten Times");
+        public static TestApp testApp3 = new("The Third Word");
+
+        public static List<MenuApplication> testApps = [
+            testApp1,
+            testApp2,
+            testApp3
+        ];
+
         static void Main(string[] args)
         {
-            List<MenuOption> mainMenuOptions =
-            [
-                new MenuOption("Youth or Pensioner", MenuAction.Program1),
-                new MenuOption("Repeat ten times", MenuAction.Program2),
-                new MenuOption("The third word", MenuAction.Program3),
-            ];
-
-            Menu mainMenu = new("MenuFlow", mainMenuOptions);
+            Menu mainMenu = new("MenuFlow", testApps);
             mainMenu.Display();
 
             Console.ReadLine();
         }
-    }
-
-    class Menu(string name, List<MenuOption> options)
-    {
-        public string Name { get; set; } = name;
-        private List<MenuOption> MenuOptions { get; set; } = options;
-        private MenuAction? SelectedMenuAction = null;
-        private Exception? MenuException = null;
-        private void SetMenuException()
-        {
-            MenuException = null;
-        }
-        private void SetMenuException(Exception exception)
-        {
-            MenuException = exception;
-        }
-        private MenuAction GetSelectedMenuAction()
-        {
-            SetMenuException();
-            var rawInput = Console.ReadKey(true).KeyChar.ToString().ToUpper();
-
-            if (rawInput == "Q")
-            {
-                return MenuAction.Quit;
-            }
-
-            if (!ValidateMenuInput(rawInput))
-            {
-                throw new ArgumentException($"\"{rawInput}\" is not a valid selection.");
-            }
-            return Enum.Parse<MenuAction>(rawInput);
-        }
-
-        private bool ValidateMenuInput(string rawInput)
-        {
-            if (rawInput == null)
-                return false;
-
-            if (rawInput.Length != 1)
-                return false;
-
-            if (!int.TryParse(rawInput, out int input))
-            {
-                return false;
-            }
-
-            if (!Enum.IsDefined(typeof(MenuAction), input))
-            {
-                return false;
-            }
-
-            return true;
-        }
-        public void Display()
-        {
-            do
-            {
-                Console.Clear();
-                Console.WriteLine($"Welcome to {Name}!");
-                Console.WriteLine("\nEnter an option from the list below to get started:\n");
-                foreach (var option in MenuOptions)
-                {
-                    Console.WriteLine($"\t{(int)option.Action}) Run \"{option.Name}\"");
-                }
-                Console.WriteLine("\n\t\"Q\" to exit the program.");
-                
-                if (MenuException != null)
-                    DisplayError(MenuException.Message);
-
-
-                try
-                {
-                    SelectedMenuAction = GetSelectedMenuAction();
-
-                    switch (SelectedMenuAction)
-                    {
-                        case MenuAction.Quit:
-                            Console.WriteLine($"\nThank you for using {Name}. Goodbye!");
-                            Environment.Exit(0);
-                            break;
-                        case MenuAction.Program1:
-                            Console.Clear();
-                            Console.WriteLine(MenuOptions[(int)MenuAction.Program1 -1].Name);
-                            break;
-                        case MenuAction.Program2:
-                            Console.Clear();
-                            Console.WriteLine(MenuOptions[(int)MenuAction.Program2 - 1].Name);
-                            break;
-                        case MenuAction.Program3:
-                            Console.Clear();
-                            Console.WriteLine(MenuOptions[(int)MenuAction.Program3 - 1].Name);
-                            break;
-                        default:
-                            break;
-                    }
-                    Console.WriteLine($"\n\tPress any key to return to {Name}\n");
-                    Console.ReadKey(true);
-                    SelectedMenuAction = null;
-                }
-                catch (Exception ex)
-                {
-                    SetMenuException(new Exception($"\t{ex.Message}\n\tPlease try again, or press \"Q\" to exit {Name}"));
-                }
-            } while (SelectedMenuAction == null);
-
-            
-        }
-
-        private void DisplayError(string message)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"\n{message}\n");
-            Console.ResetColor();
-        }
-    }
-
-    class MenuOption(string name, MenuAction action)
-    {
-        public string Name { get; set; } = name;
-        public MenuAction Action { get; set; } = action;
-    }
-
-    enum MenuAction
-    {
-        Program1 = 1,
-        Program2 = 2,
-        Program3 = 3,
-        Quit = 0
     }
 }
