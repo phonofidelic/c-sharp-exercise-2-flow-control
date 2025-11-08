@@ -1,4 +1,5 @@
 ﻿using MenuFlow.Library;
+using MenuFlow.YouthOrPensioner;
 
 namespace MenuFlow
 {
@@ -13,7 +14,7 @@ namespace MenuFlow
                 Console.WriteLine("\nThis is a Test App");
             }
         }
-        public static TestApp testApp1 = new("Youth Or Pensioner");
+        public static YouthOrPensioner.YouthOrPensioner testApp1 = new("Youth Or Pensioner");
         public static TestApp testApp2 = new("Repeat Ten Times");
         public static TestApp testApp3 = new("The Third Word");
 
