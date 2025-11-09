@@ -5,28 +5,40 @@ namespace MenuFlow
 {
     internal class Program
     {
-        public class TestApp(string name) : MenuApplication
+        public class PlaceholderApp(string name) : MenuApplication
         {
             public override string Name { get; set; } = name;
             public override void Run()
             {
                 Console.WriteLine($"Running application: {Name}");
-                Console.WriteLine("\nThis is a Test App");
+                Console.WriteLine("\nThis is a placeholder app");
             }
         }
-        public static YouthOrPensioner.YouthOrPensioner testApp1 = new("Youth Or Pensioner");
-        public static TestApp testApp2 = new("Repeat Ten Times");
-        public static TestApp testApp3 = new("The Third Word");
 
-        public static List<MenuApplication> testApps = [
-            testApp1,
-            testApp2,
-            testApp3
+        public static YouthOrPensioner.YouthOrPensioner singleTicketPriceCheckerApp = 
+            new("Check single ticket price");
+        public static PlaceholderApp groupTicketPriceCheckerApp = new("Check group ticket price");
+        public static List<MenuApplication> youthOrPensionerMenuApps = [
+            singleTicketPriceCheckerApp,
+            groupTicketPriceCheckerApp
+        ];
+
+        // Initialize the apps to be shown in the main menu:
+        public static YouthOrPensioner.TicketPriceCheckerMenu youthOrPensionerMenu = 
+            new("Ticket Price Checker", youthOrPensionerMenuApps);
+        public static PlaceholderApp placeholderApp2 = new("Repeat Ten Times");
+        public static PlaceholderApp placeholderApp3 = new("The Third Word");
+
+        public static List<MenuApplication> mainMenuApps = [
+            youthOrPensionerMenu,
+            placeholderApp2,
+            placeholderApp3
         ];
 
         static void Main(string[] args)
         {
-            Menu mainMenu = new("MenuFlow", testApps);
+            // Initialize the main menu:
+            Menu mainMenu = new("MenuFlow", mainMenuApps);
             mainMenu.Display();
 
             Console.ReadLine();

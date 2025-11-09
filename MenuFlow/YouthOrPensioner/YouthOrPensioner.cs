@@ -2,6 +2,18 @@
 
 namespace MenuFlow.YouthOrPensioner
 {
+    public class TicketPriceCheckerMenu(string name, List<MenuApplication> apps) : MenuApplication
+    {
+        private Menu? Menu = null;
+        public override string Name { get; set; } = name;
+        private List<MenuApplication> MenuOptions { get; set; } = [];
+
+        public override void Run()
+        {
+            Menu = new Menu(Name, apps);
+            Menu.Display();
+        }
+    }
     public class YouthOrPensioner(string name) : MenuApplication
     {
         private const int YOUTH_MAX_AGE = 20;
