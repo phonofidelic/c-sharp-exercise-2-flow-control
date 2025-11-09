@@ -23,24 +23,27 @@ namespace MenuFlow.YouthOrPensioner
             do
             {
                 Console.Clear();
-                Console.WriteLine($"Running application: {Name}");
+                DisplayIntro();
+                DisplayError(MenuApplicationException?.Message ?? "");
+                
                 DisplayAgePrompt();
-                if (MenuApplicationException != null)
-                {
-                    DisplayError(MenuApplicationException.Message);
-                }
-            } while (Age == null);
+            } while (Age == null); 
+        }
 
-            
+        private void DisplayIntro()
+        {
+            Console.WriteLine($"Running application: {Name}");
+            Console.WriteLine("\n");
+            Console.WriteLine("This application checks if you are a youth or a pensioner based on your age.");
+            Console.WriteLine("\n");
         }
 
         private void DisplayAgePrompt()
         {
-            Console.WriteLine("\nThis application checks if you are a youth or a pensioner based on your age.");
             Console.Write("\tPlease enter your age: ");
             try
             {
-                //MenuApplicationException = null;
+                MenuApplicationException = null;
                 string input = Console.ReadLine() ?? "";
                 Age = null;
                 bool isValidAge = ValidateAgeInput(input);
@@ -61,7 +64,13 @@ namespace MenuFlow.YouthOrPensioner
 
         private void DisplayResult(AgeCategory ageCategory)
         {
-            Console.WriteLine($"Your ticket price is {Prices[ageCategory]:C2}");
+            var n = (ageCategory == AgeCategory.Adult) ? "n" : null;
+            Console.Clear();
+            DisplayIntro();
+            DisplayError(MenuApplicationException?.Message ?? "");
+            Console.WriteLine($"\tYou qualify as a{n} {ageCategory}.");
+            Console.WriteLine($"\tYour ticket price is {Prices[ageCategory]:C2}");
+            Console.WriteLine("\n");
         }
 
         private bool ValidateAgeInput(string rawInput)
@@ -77,7 +86,8 @@ namespace MenuFlow.YouthOrPensioner
         private static void DisplayError(string message)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"\n{message}\n");
+            Console.WriteLine($"\t{message}");
+            Console.WriteLine("\n");
             Console.ResetColor();
         }
 
