@@ -8,8 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MenuFlow.Library\MenuFlow.Library.csproj" />
-    <ProjectReference Include="..\YouthOrPensioner\YouthOrPensioner.csproj" />
+    <ProjectReference Include="..\YouthOrPensioner\TicketPriceChecker.csproj" />
   </ItemGroup>
 
 </Project>

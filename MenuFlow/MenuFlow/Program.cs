@@ -1,5 +1,5 @@
 ﻿using MenuFlow.Library;
-using MenuFlow.YouthOrPensioner;
+using TicketPriceChecker;
 
 namespace MenuFlow
 {
@@ -15,22 +15,22 @@ namespace MenuFlow
             }
         }
 
-        public static YouthOrPensioner.YouthOrPensioner singleTicketPriceCheckerApp = 
+        public static TicketPriceChecker.TicketPriceCheckerApplication singleTicketPriceCheckerApp = 
             new("Check single ticket price");
         public static PlaceholderApp groupTicketPriceCheckerApp = new("Check group ticket price");
-        public static List<MenuApplication> youthOrPensionerMenuApps = [
+        public static List<MenuApplication> ticketPriceCheckerMenuApps = [
             singleTicketPriceCheckerApp,
             groupTicketPriceCheckerApp
         ];
 
         // Initialize the apps to be shown in the main menu:
-        public static YouthOrPensioner.TicketPriceCheckerMenu youthOrPensionerMenu = 
-            new("Ticket Price Checker", youthOrPensionerMenuApps);
+        public static TicketPriceChecker.TicketPriceCheckerMenu ticketPriceCheckerMenu = 
+            new("Ticket Price Checker", ticketPriceCheckerMenuApps);
         public static PlaceholderApp placeholderApp2 = new("Repeat Ten Times");
         public static PlaceholderApp placeholderApp3 = new("The Third Word");
 
         public static List<MenuApplication> mainMenuApps = [
-            youthOrPensionerMenu,
+            ticketPriceCheckerMenu,
             placeholderApp2,
             placeholderApp3
         ];

@@ -1,6 +1,6 @@
 ﻿using MenuFlow.Library;
 
-namespace MenuFlow.YouthOrPensioner
+namespace TicketPriceChecker
 {
     public class TicketPriceCheckerMenu(string name, List<MenuApplication> apps) : MenuApplication
     {
@@ -14,7 +14,7 @@ namespace MenuFlow.YouthOrPensioner
             Menu.Display();
         }
     }
-    public class YouthOrPensioner(string name) : MenuApplication
+    public class TicketPriceCheckerApplication(string name) : MenuApplication
     {
         private const int YOUTH_MAX_AGE = 20;
         private const int PENSIONER_MIN_AGE = 64;
@@ -76,7 +76,7 @@ namespace MenuFlow.YouthOrPensioner
 
         private void DisplayResult(AgeCategory ageCategory)
         {
-            var n = (ageCategory == AgeCategory.Adult) ? "n" : null;
+            var n = ageCategory == AgeCategory.Adult ? "n" : null;
             Console.Clear();
             DisplayIntro();
             DisplayError(MenuApplicationException?.Message ?? "");

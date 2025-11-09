@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MenuFlow", "MenuFlow\MenuFl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MenuFlow.Library", "MenuFlow.Library\MenuFlow.Library.csproj", "{B5E92910-2DB4-4B69-B8B6-2CF0B0B930D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouthOrPensioner", "YouthOrPensioner\YouthOrPensioner.csproj", "{033B0192-6AFA-4931-BBB8-83915623F763}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketPriceChecker", "YouthOrPensioner\TicketPriceChecker.csproj", "{033B0192-6AFA-4931-BBB8-83915623F763}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
