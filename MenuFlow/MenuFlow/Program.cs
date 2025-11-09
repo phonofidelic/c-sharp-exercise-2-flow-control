@@ -8,7 +8,7 @@ namespace MenuFlow
         public class PlaceholderApp(string name) : MenuApplication
         {
             public override string Name { get; set; } = name;
-            public override void Run()
+            public override void Render()
             {
                 Console.WriteLine($"Running application: {Name}");
                 Console.WriteLine("\nThis is a placeholder app");
@@ -18,7 +18,8 @@ namespace MenuFlow
         public static TicketPriceChecker.TicketPriceCheckerApplication singleTicketPriceCheckerApp = 
             new("Check single ticket price");
         public static PlaceholderApp groupTicketPriceCheckerApp = new("Check group ticket price");
-        public static List<MenuApplication> ticketPriceCheckerMenuApps = [
+        
+        public static List<IMenuListable> ticketPriceCheckerMenuApps = [
             singleTicketPriceCheckerApp,
             groupTicketPriceCheckerApp
         ];
@@ -29,7 +30,7 @@ namespace MenuFlow
         public static PlaceholderApp placeholderApp2 = new("Repeat Ten Times");
         public static PlaceholderApp placeholderApp3 = new("The Third Word");
 
-        public static List<MenuApplication> mainMenuApps = [
+        public static List<IMenuListable> mainMenuApps = [
             ticketPriceCheckerMenu,
             placeholderApp2,
             placeholderApp3
@@ -38,10 +39,14 @@ namespace MenuFlow
         static void Main(string[] args)
         {
             // Initialize the main menu:
-            Menu mainMenu = new("MenuFlow", mainMenuApps);
-            mainMenu.Display();
+            MainMenu mainMenu = new("MenuFlow", mainMenuApps);
+            mainMenu.Render();
 
             Console.ReadLine();
         }
+    }
+
+    public class MainMenu(string name, List<IMenuListable> apps) : Menu(name, apps)
+    {
     }
 }

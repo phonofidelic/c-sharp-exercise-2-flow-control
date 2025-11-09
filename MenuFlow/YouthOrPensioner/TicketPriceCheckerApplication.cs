@@ -2,16 +2,11 @@
 
 namespace TicketPriceChecker
 {
-    public class TicketPriceCheckerMenu(string name, List<MenuApplication> apps) : MenuApplication
+    
+    public class TicketPriceCheckerMenu : Menu
     {
-        private Menu? Menu = null;
-        public override string Name { get; set; } = name;
-        private List<MenuApplication> MenuOptions { get; set; } = [];
-
-        public override void Run()
+        public TicketPriceCheckerMenu(string name, List<IMenuListable> apps) : base(name, apps)
         {
-            Menu = new Menu(Name, apps);
-            Menu.Display();
         }
     }
     public class TicketPriceCheckerApplication(string name) : MenuApplication
@@ -26,11 +21,11 @@ namespace TicketPriceChecker
         };
         // TODO: Implement in MenuApplication base class
         public Exception? MenuApplicationException { get; set; } = null;
-        public int? Age { get; set; } = null;
+        private int? Age { get; set; } = null;
 
 
         public override string Name { get; set; } = name;
-        public override void Run()
+        public override void Render()
         {
             do
             {

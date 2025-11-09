@@ -3,16 +3,21 @@ using System.Reflection.Emit;
 
 namespace MenuFlow.Library
 {
-    public class Menu
+    public interface IMenuListable
     {
         public string Name { get; set; }
-        private List<MenuOption> MenuOptions { get; set; } = [];
+        public abstract void Render();
+    }
+    public abstract class Menu : IMenuListable
+    {
+        public string Name { get; set; }
+        protected List<MenuOption> MenuOptions { get; set; } = [];
 
-        public Menu(string name, List<MenuApplication> apps)
+        public Menu(string name, List<IMenuListable> apps)
         {
             Name = name;
             MenuOptions.Add(new MenuOption("Quit", 0));
-            foreach ((MenuApplication app, int index) in apps.Select((app, index) => (app, index)))
+            foreach ((IMenuListable app, int index) in apps.Select((app, index) => (app, index)))
             {
                 MenuOptions.Add(new MenuOption(app, index + 1));
             }
@@ -71,7 +76,10 @@ namespace MenuFlow.Library
 
             return true;
         }
-        public void Display()
+
+        // TODO: Only deal with structure of the rendering logic here?
+        // The content should be handled in the implementation of a Menu?
+        public void Render()
         {
             do
             {
@@ -82,7 +90,10 @@ namespace MenuFlow.Library
                 {
                     Console.WriteLine($"\t{MenuOptions[i].Action}) Run \"{MenuOptions[i].Name}\"");
                 }
+                if (this is Menu)
                     Console.WriteLine("\n\t\"Q\" to exit the program.");
+                else
+                    Console.WriteLine($"\n\t\"Q\" to return to {Name}");
 
                 if (MenuException != null)
                     DisplayError(MenuException.Message);
@@ -105,7 +116,7 @@ namespace MenuFlow.Library
                             if (selectedMenuOption.MenuApp != null)
                             {
                                 // TODO: Make sure each MenuApp creates only one instance of itself.
-                                selectedMenuOption.MenuApp.Run();
+                                selectedMenuOption.MenuApp.Render();
                                 break;
                             }
                             else
@@ -162,11 +173,17 @@ namespace MenuFlow.Library
         //}
     }
 
+    public abstract class MenuApplication : IMenuListable
+    {
+        public abstract string Name { get; set; }
+        public abstract void Render();
+    }
+
     public class MenuOption
     {
         public string Name;
         public int Action;
-        public MenuApplication? MenuApp;
+        public IMenuListable? MenuApp;
 
         public MenuOption(string name, int action)
         {
@@ -174,17 +191,11 @@ namespace MenuFlow.Library
             Action = action;
             MenuApp = null;
         }
-        public MenuOption(MenuApplication menuApp, int action)
+        public MenuOption(IMenuListable menuApp, int action)
         {
             Name = menuApp.Name;
             Action = action;
             MenuApp = menuApp;
         }
-    }
-
-    public abstract class MenuApplication
-    {
-        public abstract string Name { get; set; }
-        public abstract void Run();
     }
 }
