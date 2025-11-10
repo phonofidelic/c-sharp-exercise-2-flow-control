@@ -8,7 +8,6 @@ namespace TicketPriceChecker
     {
         protected override void DisplayIntro()
         {
-            Context.Debug();
             Console.WriteLine($"Welcome to {Name}!");
             Console.WriteLine("\nEnter an option from the list below to get started:\n");
         }
@@ -168,8 +167,6 @@ namespace TicketPriceChecker
 
         protected void DisplayIntro()
         {
-            Context.Debug();
-
             Console.WriteLine($"Running application: {Name}");
             Console.WriteLine("\n");
             Console.WriteLine("This application checks if you are eligible for a discounted ticket based on your age.");
