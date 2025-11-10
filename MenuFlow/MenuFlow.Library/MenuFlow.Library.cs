@@ -203,11 +203,22 @@ namespace MenuFlow.Library
     public abstract class MenuApplication : IMenuListable
     {
         public abstract string Name { get; set; }
+
+        protected Exception? MenuApplicationException { get; set; } = null;
+
         public abstract void Render();
 
         protected void DisplayIntro()
         {
             Console.WriteLine($"Welcome to {Name}!");
+        }
+
+        protected static void DisplayError(string message)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"\t{message}");
+            Console.WriteLine("\n");
+            Console.ResetColor();
         }
     }
 

@@ -126,9 +126,6 @@ namespace TicketPriceChecker
             }
         }
 
-        // TODO: Implement in MenuApplication base class
-        protected Exception? MenuApplicationException { get; set; } = null;
-
         // TODO: Hold stat in context
         public int? GroupCount { get; set; } = 1;
         public decimal TotalPrice { get; set; }
@@ -194,15 +191,6 @@ namespace TicketPriceChecker
                 return true;
             }
             return false;
-        }
-
-        // TODO: Implement in MenuApplication base class
-        protected static void DisplayError(string message)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"\t{message}");
-            Console.WriteLine("\n");
-            Console.ResetColor();
         }
 
         protected AgeCategory GetAgeCategory(int age)

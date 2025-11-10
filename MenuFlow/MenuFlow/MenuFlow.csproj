@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RepeatTenTimes\RepeatTenTimes.csproj" />
+    <ProjectReference Include="..\TheThirdWord\TheThirdWord.csproj" />
     <ProjectReference Include="..\YouthOrPensioner\TicketPriceChecker.csproj" />
   </ItemGroup>
 
