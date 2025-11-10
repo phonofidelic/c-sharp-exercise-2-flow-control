@@ -8,6 +8,7 @@ namespace TicketPriceChecker
     {
         protected override void DisplayIntro()
         {
+            Context.Debug();
             Console.WriteLine($"Welcome to {Name}!");
             Console.WriteLine("\nEnter an option from the list below to get started:\n");
         }
@@ -33,8 +34,11 @@ namespace TicketPriceChecker
         //}
     }
 
-    public class TicketPriceCheckerApplication(string name) : MenuApplication
+    public class TicketPriceCheckerApplication : MenuApplication, IMenuContext
     {
+        public override string Name { get; set; }
+        public MenuContext Context { get; set; }
+        public string ContextName { get; set; }
         private const int YOUTH_MAX_AGE = 20;
         private const int PENSIONER_MIN_AGE = 64;
         private readonly Dictionary<AgeCategory, decimal> Prices = new()
@@ -43,12 +47,25 @@ namespace TicketPriceChecker
             { AgeCategory.Adult, 120 },
             { AgeCategory.Pensioner, 90 }
         };
+        public TicketPriceCheckerApplication(string name, MenuContext context)
+        {
+            Name = name;
+            Context = context;
+            ContextName = Name.ToUpper().Replace(" ", "_");
+            RegisterContext(ContextName);
+        }
+        protected void RegisterContext(string contextName)
+        {
+            if (!Context.ContainsKey(contextName))
+            {
+                Context.Register(contextName);
+            }
+        }
+
         // TODO: Implement in MenuApplication base class
         public Exception? MenuApplicationException { get; set; } = null;
         private int? Age { get; set; } = null;
 
-
-        public override string Name { get; set; } = name;
         public override void Render()
         {
             do
@@ -56,13 +73,14 @@ namespace TicketPriceChecker
                 Console.Clear();
                 DisplayIntro();
                 DisplayError(MenuApplicationException?.Message ?? "");
-                
                 DisplayAgePrompt();
             } while (Age == null); 
         }
 
         private void DisplayIntro()
         {
+            Context.Debug();
+
             Console.WriteLine($"Running application: {Name}");
             Console.WriteLine("\n");
             Console.WriteLine("This application checks if you are eligible for a discounted ticket based on your age.");

@@ -5,16 +5,16 @@ namespace MenuFlow
 {
     internal class Program
     {
+        public static MenuContext globalContext = new();
         public static TicketPriceChecker.TicketPriceCheckerApplication singleTicketPriceCheckerApp =
-            new("Check single ticket price");
+            new("Check single ticket price", globalContext);
         public static PlaceholderApp groupTicketPriceCheckerApp = new("Check group ticket price");
 
         public static List<IMenuListable> ticketPriceCheckerMenuApps = [
             singleTicketPriceCheckerApp,
             groupTicketPriceCheckerApp
         ];
-
-        public static MenuContext globalContext = new();
+        
         // Initialize the apps to be shown in the main menu:
         public static TicketPriceChecker.TicketPriceCheckerMenu ticketPriceCheckerMenu =
             new("Ticket Price Checker", ticketPriceCheckerMenuApps, globalContext);
@@ -41,6 +41,7 @@ namespace MenuFlow
     {
         protected override void DisplayIntro()
         {
+            Context.Debug();
             Console.WriteLine($"Welcome to {Name}!");
             Console.WriteLine("\nEnter an option from the list below to get started:\n");
         }

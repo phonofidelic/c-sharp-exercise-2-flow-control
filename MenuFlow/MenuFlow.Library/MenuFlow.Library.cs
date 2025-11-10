@@ -8,10 +8,23 @@ namespace MenuFlow.Library
         public string Name { get; set; }
         public abstract void Render();
     }
-    public class Menu : IMenuListable
+    public interface IMenuContext
+    {
+        public string Name { get; set; }
+        public MenuContext Context { get; set; }
+        public string ContextName { get; set; }
+        protected void RegisterContext(string contextName)
+        {
+            if (!Context.ContainsKey(contextName))
+            {
+                Context.Register(contextName);
+            }
+        }
+    }
+    public class Menu : IMenuListable, IMenuContext
     {
         public MenuContext Context { get; set; }
-        private readonly string ContextName;
+        public string ContextName { get; set; }
         public string Name { get; set; }
         protected List<MenuOption> MenuOptions { get; set; } = [];
 
@@ -27,7 +40,7 @@ namespace MenuFlow.Library
             ContextName = Name.ToUpper().Replace(" ", "_");
             RegisterContext(ContextName);
         }
-        private void RegisterContext(string contextName)
+        protected void RegisterContext(string contextName)
         {
             if (!Context.ContainsKey(contextName))
             {
@@ -236,6 +249,13 @@ namespace MenuFlow.Library
                 result += $"{item.Key} : {item.Value}\n";
             }
             return result;
+        }
+
+        public void Debug()
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine($"{this}");
+            Console.ResetColor();
         }
     }
 }
