@@ -65,7 +65,7 @@ namespace TicketPriceChecker
         {
             Console.WriteLine($"Running application: {Name}");
             Console.WriteLine("\n");
-            Console.WriteLine("This application checks if you are a youth or a pensioner based on your age.");
+            Console.WriteLine("This application checks if you are eligible for a discounted ticket based on your age.");
             Console.WriteLine("\n");
         }
 
