@@ -216,9 +216,9 @@ namespace MenuFlow.Library
     public class MenuContext : Dictionary<string, int?>
     {
         public int? SelectedAction { get; set; } = null;
-        public void Register(string menuName)
+        public void Register(string contextName)
         {
-            this[menuName] = null;
+            this[contextName] = null;
         }
         public void SetSelectedAction(string contextName, int? selectedAction)
         {
