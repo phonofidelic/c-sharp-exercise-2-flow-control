@@ -22,16 +22,81 @@ namespace TicketPriceChecker
         {
             Console.WriteLine("\n\t\"Q\" to return to the main menu.");
         }
+    }
 
-        //protected override void RenderExit()
-        //{
-        //    if (Context.GetSelectedAction(Name) == 0)
-        //    {
-        //        Console.WriteLine($"\nThank you for using {Name}! Returning to the main menu...");
-        //        //Context.SetSelectedAction(Name, 0);
-        //        //parentContext.SetSelectedAction(null);
-        //    }
-        //}
+    public class GroupTicketPriceCheckerApplication : TicketPriceCheckerApplication
+    {
+        private int _iteration = 0;
+        public GroupTicketPriceCheckerApplication(string name, MenuContext context)
+            : base(name, context)
+        {
+            GroupCount = null;
+        }
+
+        public override void Render()
+        {
+            do
+            {
+                Console.Clear();
+                DisplayIntro();
+                DisplayError(MenuApplicationException?.Message ?? "");
+                Console.WriteLine("\tHow many people are in your group?");
+                string rawInput = Console.ReadLine() ?? "";
+                bool isValidGroupCount = ValidateIntInput(rawInput);
+                if (isValidGroupCount)
+                {
+                    GroupCount = int.Parse(rawInput);
+                    //TODO: Enter ticket price increment loop
+                    GetAge();
+                } else
+                {
+                    MenuApplicationException = new Exception($"\"{rawInput}\" is not a valid group count.");
+                }
+            } while (GroupCount == null);
+
+            DisplayResult();
+            Console.WriteLine("\n");
+            // TODO: figure out how to not hard-code this message
+            Console.WriteLine($"Press any key to return to the Ticket Price Checker menu.");
+            Console.ReadKey(true);
+            // Reset program state
+            GroupCount = null;
+            TotalPrice = 0;
+            _iteration = 0;
+        }
+
+        private void GetAge()
+        {
+            do
+            {
+                Console.Clear();
+                DisplayIntro();
+                DisplayError(MenuApplicationException?.Message ?? "");
+                Console.WriteLine($"\tHow old is person #{_iteration + 1}?");
+                string rawInput = Console.ReadLine() ?? "";
+                MenuApplicationException = null;
+                bool isValidAge = ValidateIntInput(rawInput);
+                if (isValidAge)
+                {
+                    int age = int.Parse(rawInput);
+                    decimal currentPrice = Prices[GetAgeCategory(age)];
+                    TotalPrice += currentPrice;
+                    _iteration++;
+                } else
+                {
+                    MenuApplicationException = new Exception($"'{rawInput}' is not a valid age.");
+                }
+                if (_iteration < GroupCount)
+                    GetAge();
+            } while (_iteration < GroupCount);
+
+            
+        }
+
+        private void DisplayResult()
+        {
+            Console.WriteLine($"\tThe total cost of tickets for {GroupCount} people is {TotalPrice:C}");
+        }
     }
 
     public class TicketPriceCheckerApplication : MenuApplication, IMenuContext
@@ -41,7 +106,7 @@ namespace TicketPriceChecker
         public string ContextName { get; set; }
         private const int YOUTH_MAX_AGE = 20;
         private const int PENSIONER_MIN_AGE = 64;
-        private readonly Dictionary<AgeCategory, decimal> Prices = new()
+        protected readonly Dictionary<AgeCategory, decimal> Prices = new()
         {
             { AgeCategory.Youth, 80 },
             { AgeCategory.Adult, 120 },
@@ -63,8 +128,12 @@ namespace TicketPriceChecker
         }
 
         // TODO: Implement in MenuApplication base class
-        public Exception? MenuApplicationException { get; set; } = null;
-        private int? Age { get; set; } = null;
+        protected Exception? MenuApplicationException { get; set; } = null;
+
+        // TODO: Hold stat in context
+        public int? GroupCount { get; set; } = 1;
+        public decimal TotalPrice { get; set; }
+        private int? CurrentAge { get; set; } = null;
 
         public override void Render()
         {
@@ -73,11 +142,31 @@ namespace TicketPriceChecker
                 Console.Clear();
                 DisplayIntro();
                 DisplayError(MenuApplicationException?.Message ?? "");
-                DisplayAgePrompt();
-            } while (Age == null); 
+                Console.WriteLine("\tPlease enter your age: ");
+                try
+                {
+                    MenuApplicationException = null;
+                    string rawInput = Console.ReadLine() ?? "";
+                    CurrentAge = null;
+                    bool isValidAge = ValidateIntInput(rawInput);
+                    if (isValidAge)
+                    {
+                        CurrentAge = int.Parse(rawInput);
+                        DisplayResult(GetAgeCategory(CurrentAge.Value));
+                    }
+                    else
+                    {
+                        MenuApplicationException = new Exception($"\"{rawInput}\" is not a valid age.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MenuApplicationException = new Exception($"{ex.Message}");
+                }
+            } while (CurrentAge == null); 
         }
 
-        private void DisplayIntro()
+        protected void DisplayIntro()
         {
             Context.Debug();
 
@@ -85,30 +174,6 @@ namespace TicketPriceChecker
             Console.WriteLine("\n");
             Console.WriteLine("This application checks if you are eligible for a discounted ticket based on your age.");
             Console.WriteLine("\n");
-        }
-
-        private void DisplayAgePrompt()
-        {
-            Console.Write("\tPlease enter your age: ");
-            try
-            {
-                MenuApplicationException = null;
-                string input = Console.ReadLine() ?? "";
-                Age = null;
-                bool isValidAge = ValidateAgeInput(input);
-                if (isValidAge)
-                {
-                    Age = int.Parse(input);
-                    DisplayResult(GetAgeCategory(Age.Value));
-                } else
-                {
-                    MenuApplicationException = new($"\"{input}\" is not a valid age.");
-                }
-            }
-            catch (Exception ex)
-            {
-                MenuApplicationException = new Exception($"{ex.Message}");
-            }
         }
 
         private void DisplayResult(AgeCategory ageCategory)
@@ -125,7 +190,7 @@ namespace TicketPriceChecker
             Console.ReadKey(true);
         }
 
-        private bool ValidateAgeInput(string rawInput)
+        protected bool ValidateIntInput(string rawInput)
         {
             if (int.TryParse(rawInput, out _))
             {
@@ -135,7 +200,7 @@ namespace TicketPriceChecker
         }
 
         // TODO: Implement in MenuApplication base class
-        private static void DisplayError(string message)
+        protected static void DisplayError(string message)
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"\t{message}");
@@ -143,9 +208,9 @@ namespace TicketPriceChecker
             Console.ResetColor();
         }
 
-        private AgeCategory GetAgeCategory(int age)
+        protected AgeCategory GetAgeCategory(int age)
         {
-            switch(age)
+            switch (age)
             {
                 case < YOUTH_MAX_AGE:
                     return AgeCategory.Youth;
@@ -156,7 +221,7 @@ namespace TicketPriceChecker
             }
         }
 
-        private enum AgeCategory
+        protected enum AgeCategory
         {
             Youth,
             Adult,

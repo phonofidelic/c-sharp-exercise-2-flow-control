@@ -8,7 +8,8 @@ namespace MenuFlow
         public static MenuContext globalContext = new();
         public static TicketPriceChecker.TicketPriceCheckerApplication singleTicketPriceCheckerApp =
             new("Check single ticket price", globalContext);
-        public static PlaceholderApp groupTicketPriceCheckerApp = new("Check group ticket price");
+        public static GroupTicketPriceCheckerApplication groupTicketPriceCheckerApp = 
+            new("Check group ticket price", globalContext);
 
         public static List<IMenuListable> ticketPriceCheckerMenuApps = [
             singleTicketPriceCheckerApp,

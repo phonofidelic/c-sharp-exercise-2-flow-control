@@ -226,6 +226,12 @@ namespace MenuFlow.Library
         }
     }
 
+    public enum MenuContextState
+    {
+        SelectedAction,
+
+    }
+
     public class MenuContext : Dictionary<string, int?>
     {
         public int? SelectedAction { get; set; } = null;
