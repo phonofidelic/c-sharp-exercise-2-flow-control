@@ -1,5 +1,6 @@
 ﻿using MenuFlow.Library;
 using RepeatTenTimes;
+using TheThirdWord;
 using TicketPriceChecker;
 
 namespace MenuFlow
@@ -21,12 +22,12 @@ namespace MenuFlow
         public static TicketPriceChecker.TicketPriceCheckerMenu ticketPriceCheckerMenu =
             new("Ticket Price Checker", ticketPriceCheckerMenuApps, globalContext);
         public static RepeatTenTimesApplication repeatTenTimesApp = new("Repeat Ten Times");
-        public static PlaceholderApp placeholderApp3 = new("The Third Word");
+        public static TheThirdWordApplication theThirdWordApp = new("The Third Word");
 
         public static List<IMenuListable> mainMenuApps = [
             ticketPriceCheckerMenu,
             repeatTenTimesApp,
-            placeholderApp3
+            theThirdWordApp
         ];
 
         static void Main(string[] args)
