@@ -1,4 +1,5 @@
 ﻿using MenuFlow.Library;
+using RepeatTenTimes;
 using TicketPriceChecker;
 
 namespace MenuFlow
@@ -19,12 +20,12 @@ namespace MenuFlow
         // Initialize the apps to be shown in the main menu:
         public static TicketPriceChecker.TicketPriceCheckerMenu ticketPriceCheckerMenu =
             new("Ticket Price Checker", ticketPriceCheckerMenuApps, globalContext);
-        public static PlaceholderApp placeholderApp2 = new("Repeat Ten Times");
+        public static RepeatTenTimesApplication repeatTenTimesApp = new("Repeat Ten Times");
         public static PlaceholderApp placeholderApp3 = new("The Third Word");
 
         public static List<IMenuListable> mainMenuApps = [
             ticketPriceCheckerMenu,
-            placeholderApp2,
+            repeatTenTimesApp,
             placeholderApp3
         ];
 
