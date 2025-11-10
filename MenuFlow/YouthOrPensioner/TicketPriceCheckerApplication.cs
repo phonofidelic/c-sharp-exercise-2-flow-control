@@ -3,12 +3,36 @@
 namespace TicketPriceChecker
 {
     
-    public class TicketPriceCheckerMenu : Menu
+    public class TicketPriceCheckerMenu(string name, List<IMenuListable> apps, MenuContext context, MenuContext parentContext) 
+        : Menu(name, apps, context)
     {
-        public TicketPriceCheckerMenu(string name, List<IMenuListable> apps) : base(name, apps)
+        protected override void DisplayIntro()
         {
+            Console.WriteLine($"Welcome to {Name}!");
+            Console.WriteLine("\nEnter an option from the list below to get started:\n");
+        }
+
+        protected override void DisplayMenuOption(MenuOption menuOption)
+        {
+            Console.WriteLine($"\t{menuOption.Action}) Run \"{menuOption.Name}\"");
+        }
+
+        protected override void DisplayExitCommand()
+        {
+            Console.WriteLine("\n\t\"Q\" to return to the main menu.");
+        }
+
+        protected override void RenderExit()
+        {
+            if (context.SelectedAction == 0)
+            {
+                Console.WriteLine($"\nThank you for using {Name}! Returning to the main menu...");
+                context.SetSelectedAction(0);
+                parentContext.SetSelectedAction(null);
+            }
         }
     }
+
     public class TicketPriceCheckerApplication(string name) : MenuApplication
     {
         private const int YOUTH_MAX_AGE = 20;

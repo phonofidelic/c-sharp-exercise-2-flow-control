@@ -10,10 +10,11 @@ namespace MenuFlow.Library
     }
     public abstract class Menu : IMenuListable
     {
+        private MenuContext Context;
         public string Name { get; set; }
         protected List<MenuOption> MenuOptions { get; set; } = [];
 
-        public Menu(string name, List<IMenuListable> apps)
+        public Menu(string name, List<IMenuListable> apps, MenuContext context)
         {
             Name = name;
             MenuOptions.Add(new MenuOption("Quit", 0));
@@ -21,9 +22,24 @@ namespace MenuFlow.Library
             {
                 MenuOptions.Add(new MenuOption(app, index + 1));
             }
+            Context = context;
         }
+        //public Menu(string name, List<IMenuListable> apps, MenuContext context)
+        //{
+        //    Name = name;
+        //    MenuOptions.Add(new MenuOption("Quit", 0));
+        //    foreach ((IMenuListable app, int index) in apps.Select((app, index) => (app, index)))
+        //    {
+        //        MenuOptions.Add(new MenuOption(app, index + 1));
+        //    }
+        //    Context = context;
+        //}
 
-        private int? SelectedMenuAction = null;
+        //public void ResetParentState()
+        //{
+        //    SelectedMenuAction = null;
+        //}
+        //private int? SelectedMenuAction = null;
         private Exception? MenuException = null;
         private void SetMenuException()
         {
@@ -84,34 +100,31 @@ namespace MenuFlow.Library
             do
             {
                 Console.Clear();
-                Console.WriteLine($"Welcome to {Name}!");
-                Console.WriteLine("\nEnter an option from the list below to get started:\n");
+                DisplayIntro();
                 for (int i = 1; i < MenuOptions.Count; i++)
                 {
-                    Console.WriteLine($"\t{MenuOptions[i].Action}) Run \"{MenuOptions[i].Name}\"");
+                    DisplayMenuOption(MenuOptions[i]);
                 }
-                if (this is Menu)
-                    Console.WriteLine("\n\t\"Q\" to exit the program.");
-                else
-                    Console.WriteLine($"\n\t\"Q\" to return to {Name}");
+
+                DisplayExitCommand();
 
                 if (MenuException != null)
                     DisplayError(MenuException.Message);
 
                 try
                 {
-                    SelectedMenuAction = ReadMenuActionFromKey();
-                    var selectedMenuOption = MenuOptions[SelectedMenuAction.Value];
-
-                    switch (SelectedMenuAction)
+                    //SelectedMenuAction = ReadMenuActionFromKey();
+                    Context.SetSelectedAction(ReadMenuActionFromKey());
+                    
+                    switch (Context.SelectedAction)
                     {
                         case 0:
-                            Console.WriteLine($"\nThank you for using {Name}. Goodbye!");
-                            Environment.Exit(0);
+                            RenderExit();
                             break;
                         case null:
                             break;
                         default:
+                            var selectedMenuOption = MenuOptions[Context.SelectedAction.Value];
                             Console.Clear();
                             if (selectedMenuOption.MenuApp != null)
                             {
@@ -125,15 +138,25 @@ namespace MenuFlow.Library
                     }
                     // TODO: selectedMenuOption.MenuApp?.RenderReturnPrompt() ?? ...
                     Console.WriteLine($"\n\tPress any key to return to {Name}\n");
+                    if (Context.SelectedAction != 0)
                     Console.ReadKey(true);
-                    SelectedMenuAction = null;
+                    //if (Context.SelectedAction != null)
+                    //SelectedMenuAction = null;
+                    Console.WriteLine($"Context from '{Name}': {Context.SelectedAction}");
+                    //if (Context.SelectedAction != null)    
+                    //Context.SetSelectedAction(null);
                 }
                 catch (Exception ex)
                 {
                     SetMenuException(new Exception($"\t{ex.Message}\n\tPlease try again, or press \"Q\" to exit {Name}"));
                 }
-            } while (SelectedMenuAction == null);
+            } while (Context.SelectedAction == null);
         }
+
+        protected abstract void DisplayIntro();
+        protected abstract void DisplayMenuOption(MenuOption menuOption);
+        protected abstract void DisplayExitCommand();
+        protected abstract void RenderExit();
 
         private void DisplayError(string message)
         {
@@ -196,6 +219,15 @@ namespace MenuFlow.Library
             Name = menuApp.Name;
             Action = action;
             MenuApp = menuApp;
+        }
+    }
+
+    public class MenuContext
+    {
+        public int? SelectedAction { get; set; } = null;
+        public void SetSelectedAction(int? selectedAction)
+        {
+            SelectedAction = selectedAction;
         }
     }
 }
