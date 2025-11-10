@@ -8,9 +8,10 @@ namespace MenuFlow.Library
         public string Name { get; set; }
         public abstract void Render();
     }
-    public abstract class Menu : IMenuListable
+    public class Menu : IMenuListable
     {
-        private MenuContext Context;
+        public MenuContext Context { get; set; }
+        private readonly string ContextName;
         public string Name { get; set; }
         protected List<MenuOption> MenuOptions { get; set; } = [];
 
@@ -23,23 +24,17 @@ namespace MenuFlow.Library
                 MenuOptions.Add(new MenuOption(app, index + 1));
             }
             Context = context;
+            ContextName = Name.ToUpper().Replace(" ", "_");
+            RegisterContext(ContextName);
         }
-        //public Menu(string name, List<IMenuListable> apps, MenuContext context)
-        //{
-        //    Name = name;
-        //    MenuOptions.Add(new MenuOption("Quit", 0));
-        //    foreach ((IMenuListable app, int index) in apps.Select((app, index) => (app, index)))
-        //    {
-        //        MenuOptions.Add(new MenuOption(app, index + 1));
-        //    }
-        //    Context = context;
-        //}
+        private void RegisterContext(string contextName)
+        {
+            if (!Context.ContainsKey(contextName))
+            {
+                Context.Register(contextName);
+            }
+        }
 
-        //public void ResetParentState()
-        //{
-        //    SelectedMenuAction = null;
-        //}
-        //private int? SelectedMenuAction = null;
         private Exception? MenuException = null;
         private void SetMenuException()
         {
@@ -49,7 +44,7 @@ namespace MenuFlow.Library
         {
             MenuException = exception;
         }
-        private int ReadMenuActionFromKey()
+        private int ReadMenuActionFromKeyPress()
         {
             SetMenuException();
             var rawInput = Console.ReadKey(true).KeyChar.ToString().ToUpper();
@@ -113,10 +108,9 @@ namespace MenuFlow.Library
 
                 try
                 {
-                    //SelectedMenuAction = ReadMenuActionFromKey();
-                    Context.SetSelectedAction(ReadMenuActionFromKey());
+                    Context.SetSelectedAction(ContextName, ReadMenuActionFromKeyPress());
                     
-                    switch (Context.SelectedAction)
+                    switch (Context.GetSelectedAction(ContextName))
                     {
                         case 0:
                             RenderExit();
@@ -124,7 +118,7 @@ namespace MenuFlow.Library
                         case null:
                             break;
                         default:
-                            var selectedMenuOption = MenuOptions[Context.SelectedAction.Value];
+                            var selectedMenuOption = MenuOptions[Context.GetSelectedAction(ContextName)!.Value];
                             Console.Clear();
                             if (selectedMenuOption.MenuApp != null)
                             {
@@ -136,27 +130,24 @@ namespace MenuFlow.Library
                                 Console.WriteLine($"The '{selectedMenuOption.Name}' app has not been implemented yet.");
                             break;
                     }
-                    // TODO: selectedMenuOption.MenuApp?.RenderReturnPrompt() ?? ...
-                    Console.WriteLine($"\n\tPress any key to return to {Name}\n");
-                    if (Context.SelectedAction != 0)
-                    Console.ReadKey(true);
-                    //if (Context.SelectedAction != null)
-                    //SelectedMenuAction = null;
-                    Console.WriteLine($"Context from '{Name}': {Context.SelectedAction}");
-                    //if (Context.SelectedAction != null)    
-                    //Context.SetSelectedAction(null);
+                    
+                    if (Context.GetSelectedAction(ContextName) == null)
+                    {
+                        Console.WriteLine($"\n\tPress any key to return to {Name}\n");
+                        Console.ReadKey(true);
+                    }
                 }
                 catch (Exception ex)
                 {
                     SetMenuException(new Exception($"\t{ex.Message}\n\tPlease try again, or press \"Q\" to exit {Name}"));
                 }
-            } while (Context.SelectedAction == null);
+            } while (Context.GetSelectedAction(ContextName) != 0);
         }
 
-        protected abstract void DisplayIntro();
-        protected abstract void DisplayMenuOption(MenuOption menuOption);
-        protected abstract void DisplayExitCommand();
-        protected abstract void RenderExit();
+        protected virtual void DisplayIntro() { }
+        protected virtual void DisplayMenuOption(MenuOption menuOption) { }
+        protected virtual void DisplayExitCommand() { }
+        protected virtual void RenderExit() { }
 
         private void DisplayError(string message)
         {
@@ -222,12 +213,29 @@ namespace MenuFlow.Library
         }
     }
 
-    public class MenuContext
+    public class MenuContext : Dictionary<string, int?>
     {
         public int? SelectedAction { get; set; } = null;
-        public void SetSelectedAction(int? selectedAction)
+        public void Register(string menuName)
         {
+            this[menuName] = null;
+        }
+        public void SetSelectedAction(string contextName, int? selectedAction)
+        {
+            this[contextName] = selectedAction;
             SelectedAction = selectedAction;
+        }
+        public int? GetSelectedAction(string contextName)
+        {
+            return this[contextName];
+        }
+        public override string ToString()
+        {
+            string result = "";
+            foreach (var item in this) {
+                result += $"{item.Key} : {item.Value}\n";
+            }
+            return result;
         }
     }
 }

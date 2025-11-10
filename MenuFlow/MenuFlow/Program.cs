@@ -14,11 +14,10 @@ namespace MenuFlow
             groupTicketPriceCheckerApp
         ];
 
-        public static MenuContext mainMenuContext = new();
-        public static MenuContext ticketPriceCheckerMenuContext = new();
+        public static MenuContext globalContext = new();
         // Initialize the apps to be shown in the main menu:
         public static TicketPriceChecker.TicketPriceCheckerMenu ticketPriceCheckerMenu =
-            new("Ticket Price Checker", ticketPriceCheckerMenuApps, ticketPriceCheckerMenuContext, mainMenuContext);
+            new("Ticket Price Checker", ticketPriceCheckerMenuApps, globalContext);
         public static PlaceholderApp placeholderApp2 = new("Repeat Ten Times");
         public static PlaceholderApp placeholderApp3 = new("The Third Word");
 
@@ -31,7 +30,7 @@ namespace MenuFlow
         static void Main(string[] args)
         {
             // Initialize the main menu:
-            MainMenu mainMenu = new("MenuFlow", mainMenuApps, mainMenuContext);
+            MainMenu mainMenu = new("MenuFlow", mainMenuApps, globalContext);
             mainMenu.Render();
 
             Console.ReadLine();
@@ -70,6 +69,8 @@ namespace MenuFlow
         {
             Console.WriteLine($"Running application: {Name}");
             Console.WriteLine("\nThis is a placeholder app");
+            Console.WriteLine("\n\tPress any key to return to the main menu.");
+            Console.ReadKey(true);
         }
     }
 }

@@ -3,8 +3,8 @@
 namespace TicketPriceChecker
 {
     
-    public class TicketPriceCheckerMenu(string name, List<IMenuListable> apps, MenuContext context, MenuContext parentContext) 
-        : Menu(name, apps, context)
+    public class TicketPriceCheckerMenu(string name, List<IMenuListable> apps, MenuContext context) : Menu(name, apps, context)
+
     {
         protected override void DisplayIntro()
         {
@@ -22,15 +22,15 @@ namespace TicketPriceChecker
             Console.WriteLine("\n\t\"Q\" to return to the main menu.");
         }
 
-        protected override void RenderExit()
-        {
-            if (context.SelectedAction == 0)
-            {
-                Console.WriteLine($"\nThank you for using {Name}! Returning to the main menu...");
-                context.SetSelectedAction(0);
-                parentContext.SetSelectedAction(null);
-            }
-        }
+        //protected override void RenderExit()
+        //{
+        //    if (Context.GetSelectedAction(Name) == 0)
+        //    {
+        //        Console.WriteLine($"\nThank you for using {Name}! Returning to the main menu...");
+        //        //Context.SetSelectedAction(Name, 0);
+        //        //parentContext.SetSelectedAction(null);
+        //    }
+        //}
     }
 
     public class TicketPriceCheckerApplication(string name) : MenuApplication
@@ -102,6 +102,9 @@ namespace TicketPriceChecker
             Console.WriteLine($"\tYou qualify as a{n} {ageCategory}.");
             Console.WriteLine($"\tYour ticket price is {Prices[ageCategory]:C2}");
             Console.WriteLine("\n");
+            // TODO: figure out how to not hard-code this message
+            Console.WriteLine($"Press any key to return to the Ticket Price Checker menu.");
+            Console.ReadKey(true);
         }
 
         private bool ValidateAgeInput(string rawInput)
