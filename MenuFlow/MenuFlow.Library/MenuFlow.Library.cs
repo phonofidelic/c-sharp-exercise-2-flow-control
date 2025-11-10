@@ -204,6 +204,11 @@ namespace MenuFlow.Library
     {
         public abstract string Name { get; set; }
         public abstract void Render();
+
+        protected void DisplayIntro()
+        {
+            Console.WriteLine($"Welcome to {Name}!");
+        }
     }
 
     public class MenuOption
