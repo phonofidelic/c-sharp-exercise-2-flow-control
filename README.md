@@ -23,6 +23,7 @@ To demonstrate if statements, a fictional local movie theater offers discounted 
 The program should also be able to calculate the price for a group of people. The user is prompted to enter the number of people in the group, and then the age of each person. The program calculates the total price for the group based on the individual prices and prints out a summary containing the number of people and the calculated total price.
 
 ### Option 2: Repeat ten times
-TBD
+To demonstrate `for` loops, this program should prompt the user to enter a word into the console. The program then outputs that word ten times on a single line.
+
 ### Option 3: The third word
-TBD
+Working with string manipulation, this program should take a sentence from the user and output the third word. The program will use `string.Split(char)` to split the sentence into individual words and store these in a variable.
